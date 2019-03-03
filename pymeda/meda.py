@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import knor
 from scipy.stats import zscore
+from sklearn.utils import resample
 from plotly.offline import (download_plotlyjs, init_notebook_mode)
 from jinja2 import Environment, PackageLoader, select_autoescape, FileSystemLoader
 
@@ -90,21 +91,16 @@ class Meda:
     def heatmap(self, mode=None):
         """
         Generate heatmap of all observations
-        If n > 1000, then a kmeans++ initializaiton is performed to derive 
-        1000 cluster centers. 
         """
         if not mode:
             mode = self._mode
 
-        if self._ds.n > 1000:  #if sample size is > 1000, run kmeans++ initialization
-            ret = knor.Kmeans(
-                self._ds_normed.D.values, 1000, max_iters=0, init='kmeanspp')
-            centroids_df = pd.DataFrame(
-                ret.get_centroids(), columns=self._ds.D.columns)
-            centroids_ds = lds.DataSet(centroids_df, name=self._ds.name)
-
+        if self._ds.n > 1000:  #if sample size is > 1000, randomly downsample
+            samples = resample(self._ds.D.values, n_samples=1000)
+            df_samples = pd.DataFrame(samples, columns=self._ds.D.columns)
+            ds_samples = lds.DataSet(df_samples.apply(zscore), name=self._ds.name)
             return lpl.Heatmap(
-                centroids_ds, mode=mode).plot(showticklabels=True)
+                ds_samples, mode=mode).plot(showticklabels=True)
         else:
             return lpl.Heatmap(
                 self._ds_normed, mode=mode).plot(showticklabels=True)
@@ -117,14 +113,12 @@ class Meda:
             mode = self._mode
 
         if self._ds.n > 1000:  #if sample size is > 1000, run kmeans++ initialization
-            ret = knor.Kmeans(
-                self._ds_normed.D.values, 1000, max_iters=0, init='kmeanspp')
-            centroids_df = pd.DataFrame(
-                ret.get_centroids(), columns=self._ds.D.columns)
-            centroids_ds = lds.DataSet(centroids_df, name=self._ds.name)
-
+            samples = resample(self._ds.D.values, n_samples=1000)
+            df_samples = pd.DataFrame(samples, columns=self._ds.D.columns)
+            ds_samples = lds.DataSet(df_samples.apply(zscore), name =\
+                    self._ds.name)
             return lpl.HistogramHeatmap(
-                centroids_ds,
+                ds_samples,
                 mode=mode).plot(showticklabels=self._showticklabels)
         else:
             return lpl.HistogramHeatmap(
