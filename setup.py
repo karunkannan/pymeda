@@ -45,7 +45,7 @@ setup(
         'pandas',
         'numpy',
         'scipy',
-        'plotly==2.2.2',
+        'plotly==3.6.1',
         'matplotlib',
         'colorlover',
         'scikit-learn',

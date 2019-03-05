@@ -34,8 +34,7 @@ def get_plt_cmap(cmap, n):
     cmap : str
         Colormap from matplotlib 
     n : int
-        Number of colors to output
-        
+        Number of colors to output 
     Returns
     -------
     out : list
@@ -291,7 +290,7 @@ class RidgeLine(MatrixPlotter):
             showgrid=False,
             showticklabels=True,
             linecolor='rgb(204, 204, 204)',
-            autotick=False,
+            #autotick=False,
             ticks='outside',
             tickcolor='rgb(204, 204, 204)')
 
@@ -402,8 +401,9 @@ class HierarchicalClusterMeansDendrogram(MatrixPlotter):
 
         fig["layout"]["xaxis"]["title"] = "Cluster Labels"
         fig["layout"]["yaxis"]["title"] = "Cluster Mean Distances"
-        del fig.layout["width"]
-        del fig.layout["height"]
+        #del fig.layout["width"]
+        #del fig.layout["height"]
+
         return self.makeplot(fig, "agg/" + self.shortname)
 
 
@@ -564,6 +564,6 @@ class ClusterPairsPlot(MatrixPlotter):
             fig["layout"]["title"] = title
         else:
             fig["layout"]["title"] = None
-        del fig.layout["width"]
-        del fig.layout["height"]
+        #del fig.layout["width"]
+        #del fig.layout["height"]
         return self.makeplot(fig, "agg/" + self.shortname)
